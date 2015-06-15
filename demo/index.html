@@ -1,0 +1,66 @@
+<!doctype html>
+<head>
+	<title>VideoJS - VPAID Plugin</title>
+	
+	<!-- VideoJS v4.11.4 -->
+    <link href="/node_modules/video.js/dist/video-js/video-js.css" rel="stylesheet">
+    <script src="/node_modules/video.js/dist/video-js/video.dev.js"></script>
+	
+    <!-- VPAID Plugin CSS -->
+    <link href="/lib/plugin.vjs.vpaid.css" rel="stylesheet" type="text/css">
+	  
+	<!-- General Styling -->
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	
+	<h2>VideoJS VPAID - (VJS v4.11.4)</h2>
+
+	<div class="content-center">
+		<video id="player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="none" width="auto" height="auto">
+		    <!-- <source src="../sandbox/exampleadvpaid2.swf" type='application/x-shockwave-flash' /> -->
+			<!-- <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'> -->
+		</video>
+	</div>
+	
+	<div class="content-center vpaid-settings-wrap">
+
+        <!-- ALT VPAID Ad Unit Test -->
+		<div class="ad-unit-test-wrap">
+			<div style="min-height: 30px;line-height: 30px;">
+				<label for="vpaid_url">VPAID (FLASH) URL</label>
+				<input width="300" value="http://player.kaltura.com/modules/AdSupport/tests/liverail.xml" name="vpaid_url" id="vpaid_url" />
+				<br/>
+                <label for="vpaid_params">VPAID (FLASH) Params</label>
+                <input width="300" value="random={utility.random}&timestamp={utility.timestamp}&referrer_url={utility.referrer_url}&referrer_host={utility.referrer_host}" name="vpaid_params" id="vpaid_params" />
+                <br style="clear: both;"/>
+			</div>
+			<div class="vpaid-options">
+				<button class="option-button" onclick="setVPAID('http://player.kaltura.com/modules/AdSupport/tests/liverail.xml', 'random={utility.random}&timestamp={utility.timestamp}&referrer_url={utility.referrer_url}&referrer_host={utility.referrer_host}')">VPAID LiveRail</button>
+				<button class="option-button" onclick="setVPAID('http://vast.bp3864217.btrll.com/vast/3864217', 'n=[timestamp]')">VPAID Brightroll</button>
+			</div>
+			<button class="option-button" onclick="toggleFlashDebug()">Toggle Flash Debug (<span id='toggleFlashDebug'></span>)</button>
+			<button onclick="runVPAIDAlt()">Run VPAID</button>
+		</div>
+		
+		<div class="notes">
+			<p>Notes</p>
+			<ul>
+				<li>To re-test a VPAID XML Ad you will need to refresh the page, or <a href="#" onclick="refreshPage()">click here</a>.</li>
+				<li>There are numerous debug logs being generated, please view the JavaScript console to see what is going on</li>
+			</ul>
+		</div>
+	</div>
+
+<!-- VPAID Plugin JS -->
+<script src="/lib/plugin.vjs.vpaid.js"></script>
+
+<!-- General Script -->
+<script src="script.js"></script>
+
+</body>
+</html>
+	
+	
+	
+	    

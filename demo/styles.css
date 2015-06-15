@@ -1,0 +1,141 @@
+
+body {
+	background-color: #eee;
+}
+
+.vjs-default-skin .vjs-menu-button ul li.vjs-selected {
+  background-color: rgba(79, 172, 224, 0.7);
+}
+
+.video-js .vjs-tech {
+/*	z-index: 5;*/
+}
+
+.ad-unit-test-wrap {
+  clear: both;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #aaa;
+  padding: 0 2% 20px 2%;
+}
+
+.ad-unit-test-wrap.last-ad-test {
+  margin-bottom: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.content-center {
+	max-width: 720px;
+	margin: 0 auto;
+	width: 99%;
+}
+	
+.vpaid-settings-wrap {
+	margin-top: 15px;
+	margin-bottom: 50px;
+}
+.vpaid-settings-wrap label {
+	float: left;
+	width: 30%;
+}
+.vpaid-settings-wrap input {
+	float: right;
+	width: 70%;
+	box-sizing: border-box;
+	padding: 4px;
+}
+.vpaid-settings-wrap button {
+	width: 100%;
+	font-size: 15px;
+	padding: 4px;
+	background-color: #7BC4ED;
+	border: 3px solid #7BC4ED;
+	color: #fff;
+	margin-top: 15px;
+}
+.vpaid-settings-wrap .option-button {
+	width: 30%;
+	font-size: 13px;
+	padding: 4px;
+	background-color: #DDD;
+	border: 3px solid #DDD;
+	color: #666;
+	margin-top: 15px;
+}
+.vpaid-settings-wrap button:hover,
+.vpaid-settings-wrap .option-button:hover {
+	cursor: pointer;
+	border-bottom-color: rgba(0, 0, 0, 0.2);
+}
+.content-center .video-js {
+	width: 100%;
+	height: 300px;
+	background-color: #242424;
+}
+button:focus {
+	outline: 0;
+}
+
+.notes {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	padding: 10px 5px;
+	margin-top: 10px;
+}
+
+.notes p {
+	margin: 0;
+}
+
+.notes ul {
+	padding: 0 20px;
+	margin-top: 10px;
+}
+
+.notes li {
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 10px;
+}
+
+.notes li:last-child {
+	margin-bottom: 0;
+	border: 0;
+}
+
+.video-features-test {
+	background-color: rgba(79, 172, 224, 0.45);
+	border: 1px solid #4face0;
+	padding: 1%;
+	margin-top: 40px;
+}
+
+	.video-features-test p {
+		margin-top: 0;
+		color: #333;
+	}
+
+	.video-features-test .option-button {
+		margin-top: 0;
+		background-color: #fff;
+		border-color: #fff;
+	}
+	
+	.video-features-test  button:hover, .video-features-test .option-button:hover {
+	  	border-bottom-color: rgba(46, 118, 249, 0.56);
+	}
+
+@media (max-width: 480px) {
+	.content-center {
+		width: 100%;
+	}
+	
+	.vpaid-settings-wrap label,
+	.vpaid-settings-wrap input {
+		float: none;
+	}
+	
+	.vpaid-settings-wrap input {
+		width: 100%;
+	}
+}
