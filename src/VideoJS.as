@@ -171,9 +171,6 @@ package{
 			_vpaidUrl		= loaderInfo.parameters.vpaidUrl;
 			_vpaidParams	= loaderInfo.parameters.vpaidParams;
 			_vpaidUrls		= JSON.parse(loaderInfo.parameters.vpaidUrls);
-			
-			var pattern:RegExp = /\|\|/g;
-			_vpaidParams = _vpaidParams.replace(pattern,"&");
         }
         
         private function onStageSizeTimerTick(e:TimerEvent):void{
@@ -446,7 +443,7 @@ package{
             }
         }
 
-        public function attemptMultipleVPAID(currentIndex:int = 0) {
+		public function attemptMultipleVPAID(currentIndex:int = 0) {
 			console('currentIndex' + _vpaidUrls[currentIndex].params);
 			_app.model.adContainer.loadVPAIDXML(_vpaidUrls[currentIndex].url, _vpaidUrls[currentIndex].params,
 				function(event:Event):void {
@@ -481,8 +478,7 @@ package{
 		}
 
 		public function mbp_initVPAID():void {
-            try {
-                
+			try {
 				if (_vpaidUrl.length == 0 && _vpaidUrls.length == 0) {
 					console("Unable to initiate VPAID ad. Url was invalid.");
 					_app.model.adContainer.invalidVPAIDURL();
