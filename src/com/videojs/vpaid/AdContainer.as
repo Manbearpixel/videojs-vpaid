@@ -203,7 +203,6 @@ package com.videojs.vpaid {
 				/*request.data = variables.toString();*/
 				request.data = variables.toString().replace(undPatrn, "_");
 			}
-			console(request);
 		
 			var loader:URLLoader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, onComplete);
@@ -267,7 +266,10 @@ package com.videojs.vpaid {
         }
         
         private function successfulCreativeLoad(evt: Object): void {
+
+			console("successful creative load!");
             _vpaidAd = evt.target.content.getVPAID();
+			/*console(_vpaidAd);*/
             var duration = _vpaidAd.hasOwnProperty("adDuration") ? _vpaidAd.adDuration : 0,
                 width    = _vpaidAd.hasOwnProperty("adWidth") ? _vpaidAd.adWidth : 0,
                 height   = _vpaidAd.hasOwnProperty("adHeight") ? _vpaidAd.adHeight : 0;
