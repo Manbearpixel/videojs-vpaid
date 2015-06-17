@@ -32,6 +32,7 @@ package{
 		private var _debug:Boolean = false;
 		private var _vpaidUrl:String = "";
 		private var _vpaidParams:String = "";
+		private var _vpaidUrls:* = [];
         
         public function VideoJS() {
             _stageSizeTimer = new Timer(250);
@@ -169,9 +170,7 @@ package{
 			_debug 			= humanToBoolean(loaderInfo.parameters.vpaidDebug);
 			_vpaidUrl		= loaderInfo.parameters.vpaidUrl;
 			_vpaidParams	= loaderInfo.parameters.vpaidParams;
-			
-			var pattern:RegExp = /\|\|/g;
-			_vpaidParams = _vpaidParams.replace(pattern,"&");
+			_vpaidUrls		= JSON.parse(loaderInfo.parameters.vpaidUrls);
         }
         
         private function onStageSizeTimerTick(e:TimerEvent):void{
@@ -421,7 +420,6 @@ package{
             _app.model.broadcastEventExternally(ExternalEventName.ON_STAGE_CLICK);
         }
 		
-		
 		// VPAID Integration
 		public function console(mixedVar:*):void {
 			if (_debug) {
@@ -444,14 +442,49 @@ package{
                 return false;
             }
         }
-		
-		public function mbp_initVPAID():void {
+
+		public function attemptMultipleVPAID(currentIndex:int = 0) {
+			console('currentIndex' + _vpaidUrls[currentIndex].params);
+			_app.model.adContainer.loadVPAIDXML(_vpaidUrls[currentIndex].url, _vpaidUrls[currentIndex].params,
+				function(event:Event):void {
+					console("ONCOMPLETE XML Load");
+					var response:String = event.target.data;
+					/*console("RESPONSE");*/
+					/*console(response);*/
 			
-            try {
-                
-				if (_vpaidUrl.length == 0) {
+					var adSWF:String = _app.model.adContainer.findVPAIDSWF(response);
+					/*console("AD SWF");*/
+					/*console(adSWF);*/
+					/*console(adSWF.indexOf(".swf"));*/
+			
+					if (adSWF.indexOf(".swf") != -1) {
+						console("VPAID SWF EXISTS")
+						/*_app.model.adContainer.src(adSWF);*/
+						_app.model.adContainer.setSrcTest(adSWF);
+						console(_app.model.adContainer.getSrc());
+						_app.model.adContainer.loadAdAsset();
+					}
+					else {
+						console("NO PROPER SWF FOUND! Attempt another if it's there.");
+						currentIndex = currentIndex + 1;
+						if (_vpaidUrls[currentIndex]) {
+							attemptMultipleVPAID(currentIndex);
+						} else {
+							_app.model.adContainer.abortAd();
+						}
+					}
+				}
+			);
+		}
+
+		public function mbp_initVPAID():void {
+			try {
+				if (_vpaidUrl.length == 0 && _vpaidUrls.length == 0) {
 					console("Unable to initiate VPAID ad. Url was invalid.");
 					_app.model.adContainer.invalidVPAIDURL();
+					return;
+				} else if (_vpaidUrls.length > 0) {
+					attemptMultipleVPAID();
 					return;
 				}
 			

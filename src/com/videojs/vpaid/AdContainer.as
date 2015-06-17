@@ -121,6 +121,7 @@ package com.videojs.vpaid {
         }
         
         private function onAdLoaded(): void {
+        	_model.broadcastEventExternally(VPAIDEvent.AdLoaded);
             addChild(_vpaidAd);
 			console("ONADLOADED");
             _vpaidAd.startAd();
