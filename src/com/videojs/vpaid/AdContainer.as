@@ -225,6 +225,11 @@ package com.videojs.vpaid {
 				console(mediaFile.toString());
 				if (mediaFile.toString().indexOf(".swf") != -1) {
 					vpaidSWFURL = mediaFile;
+					var vpaidAdParams:String = vpaidXML.Ad.InLine.Creatives.Creative.Linear.AdParameters.toString();
+
+					if (vpaidAdParams !== "") {
+						_model.adParameters = vpaidAdParams;
+					}
 				}
 				
 				/*var hasLinear:Boolean = (creative.Linear.children().length() > 0);
