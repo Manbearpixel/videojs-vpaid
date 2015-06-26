@@ -386,9 +386,10 @@ package com.videojs{
             if(_jsEventProxyName != ""){
                 if(ExternalInterface.available){
                     var __incomingArgs:* = args as Array;
-                    var __newArgs:Array = [_jsEventProxyName, ExternalInterface.objectID].concat(__incomingArgs);
+                    var __newArgs:Array = [ExternalInterface.objectID].concat(__incomingArgs);
                     var __sanitizedArgs:Array = cleanObject(__newArgs);
-                    ExternalInterface.call.apply(null, __sanitizedArgs);
+                    var __jsEventCall:String = _jsEventProxyName + '("' + __sanitizedArgs.join('","') + '")';
+                    ExternalInterface.call('setTimeout', __jsEventCall, 0);
                 }
             }
         }
@@ -402,9 +403,10 @@ package com.videojs{
             if(_jsErrorEventProxyName != ""){
                 if(ExternalInterface.available){
                     var __incomingArgs:* = args as Array;
-                    var __newArgs:Array = [_jsErrorEventProxyName, ExternalInterface.objectID].concat(__incomingArgs);
+                    var __newArgs:Array = [ExternalInterface.objectID].concat(__incomingArgs);
                     var __sanitizedArgs:Array = cleanObject(__newArgs);
-                    ExternalInterface.call.apply(null, __sanitizedArgs);
+                    var __jsEventCall:String = _jsErrorEventProxyName + '("' + __sanitizedArgs.join('","') + '")';
+                    ExternalInterface.call('setTimeout', __jsEventCall, 0);
                 }
             }
         }
