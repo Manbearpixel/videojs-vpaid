@@ -169,39 +169,45 @@ package com.videojs.vpaid {
 			param onComplete The function to call when complete
 			
 		*/
-		public function loadVPAIDXML(adUrl:String, adParams:String, onComplete:Function):* {
+		public function loadVPAIDXML(adUrl:String, onComplete:Function):* {
 			
 			console("requesting vpaid...");
-			console("url::" + adUrl);
-			console("params::" + adParams);
+			
+			// Split URL to get url and params
+			var urlSplit:Array 		= adUrl.split("?");
+			var urlStr:String 		= urlSplit[0];
+			var urlParams:String	= urlSplit[1];
+				
+			console("url::" + urlStr);
+			console("params::" + urlParams);
 		
+			// initiate urlrequest
 			var request:URLRequest = new URLRequest(adUrl);
 			request.method = URLRequestMethod.GET;
+		
+			// initiate urlvariables
+			var variables:URLVariables = new URLVariables();
 			
-			if(adParams.length > 0 && adParams != undefined) {
-				var variables:URLVariables = new URLVariables();
-				var arrParams:Array = adParams.split("&");
-				
-				for (var i=0; i<arrParams.length; i++) {
-					var param:String = String(arrParams[i]);
-					var splitIndex:Number = param.indexOf("=");
-					
-					var pName = param.substr(0, splitIndex);
-					var pValue = param.substr(splitIndex+1);
-					
-					variables[pName] = pValue;
-				}
-				
-				// set up the search expression:
-				var undPatrn:RegExp = /%5f/gi;
-
-				/*ExternalInterface.call("console.log", "Without '_': " + variables.toString());*/
-				/*ExternalInterface.call("console.log", "With '_': " + variables.toString().replace(undPatrn, "_"));*/
-
-				// navigate with underscore:    
-				/*request.data = variables.toString();*/
-				request.data = variables.toString().replace(undPatrn, "_");
+			// loop through variables and add them to urlvariables
+			var arrParams:Array = urlParams.split("&");
+			for (var i = 0; i < arrParams.length; i++) {
+				var param:Array = arrParams[i].split("=");
+				variables[param[0]] = param[1];
+				console("-- ADDING PARAM: " + param[0] + "=" + param[1]);
 			}
+			
+			request.data = variables;
+		
+			// set up the search expression:
+			/*var undPatrn:RegExp = /%5f/gi;*/
+
+			/*ExternalInterface.call("console.log", "Without '_': " + variables.toString());*/
+			/*ExternalInterface.call("console.log", "With '_': " + variables.toString().replace(undPatrn, "_"));*/
+
+			// navigate with underscore:    
+			/*request.data = variables.toString();*/
+			/*request.data = variables.toString().replace(undPatrn, "_");*/
+			
 		
 			var loader:URLLoader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, onComplete);

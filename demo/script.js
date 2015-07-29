@@ -16,17 +16,22 @@ function refreshPage() {
 	location.reload();
 }
 
-function setVPAID(vpaidURL, vpaidParams) {
+function setVPAID(vpaidURL) {
 	document.getElementById("vpaid_url").value = vpaidURL;
-    document.getElementById("vpaid_params").value = vpaidParams;
 }
 
 window.vjsPlayerVPAID = null;
 function runVPAIDAlt() {
     console.log("[js] Running Player with ALT VPAID Ad URL: " + document.getElementById("vpaid_url").value);
 
+	// Personal way of setting html5 or flash, NOT REQUIRED
+	var techOptions = ["html5", "flash"];
+	if (/firefox/i.test(navigator.userAgent) === true) {
+		techOptions = ["flash", "html5"];
+	}
+	
     window.vjsPlayerVPAID = videojs("player", {
-      techOrder : ["html5", "flash"],
+      techOrder : techOptions,
       controls  : true,
       autoplay  : false,
       poster    : videoPoster,
@@ -34,7 +39,6 @@ function runVPAIDAlt() {
         vjsVPAID : {
             vpaidSWF: '/dist/videojs-vpaid.swf',
             vpaidUrl: document.getElementById("vpaid_url").value,
-            vpaidParams: document.getElementById("vpaid_params").value,
             debug: vpaidFlashDebug
         }
       }
@@ -82,7 +86,16 @@ function runVPAIDAlt() {
 
 		player.on("adtimeout", function(event){
 			console.log("[VJS - VPAID] ad timeout");
-		})
+		});
+		
+       	player.on("vpaid_AdComplete", function(event){
+			console.log("[VJS] VPAID COMPLETE");
+		});
+		
+       	player.on("vpaid_error", function(event){
+			console.log("[VJS] VPAID ERROR");
+		});
+		
 	});
 
 }
