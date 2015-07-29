@@ -26,7 +26,7 @@ package com.videojs.vpaid {
 		
 		private var _debug:Boolean = false;
 		
-		private var _timeoutDelay:Number = 5000;
+		private var _adResponseTimeoutDelay:Number = 5000;
 		private var _intervalId:uint;
 		private var _adTimeout:Timer;
 
@@ -42,9 +42,13 @@ package com.videojs.vpaid {
 			}
 		}
 		
-		public function testFunction():String {
-			return "You got me!";
-		}
+        public function setDebug(pValue):void {
+            _debug = pValue;
+        }
+		
+        public function setTimeout(pValue):void {
+            _adResponseTimeoutDelay = pValue;
+        }
 
         public function get hasActiveAdAsset(): Boolean {
             return _vpaidAd != null;
@@ -123,6 +127,7 @@ package com.videojs.vpaid {
         private function onAdLoaded(): void {
             addChild(_vpaidAd);
 			console("ONADLOADED");
+			_model.broadcastEventExternally(VPAIDEvent.AdLoaded);
             _vpaidAd.startAd();
         }
 
@@ -130,7 +135,7 @@ package com.videojs.vpaid {
 			console("ONADSTARTED");
 			clearTimeout();
 			
-            _model.broadcastEventExternally(ExternalEventName.ON_START)
+            _model.broadcastEventExternally(ExternalEventName.ON_START);
             _model.broadcastEventExternally(VPAIDEvent.AdStarted);
             _isPlaying = true;
             _isPaused = false;
@@ -150,17 +155,43 @@ package com.videojs.vpaid {
             }
         }
 		
+        private function onAdClickThru(): void {
+			console("-- ON AdClickThru");
+			_model.broadcastEventExternally(VPAIDEvent.AdClickThru);
+        }
+		
+        private function onAdPaused(): void {
+			console("-- ON AdPaused");
+			_model.broadcastEventExternally(VPAIDEvent.AdPaused);
+        }
+		
+        private function onAdPlaying(): void {
+			console("-- ON ADPLAYING");
+			_model.broadcastEventExternally(VPAIDEvent.AdPlaying);
+        }
+		
+        private function onAdVideoFirstQuartile(): void {
+			console("-- ON AdVideoFirstQuartile");
+			_model.broadcastEventExternally(VPAIDEvent.AdVideoFirstQuartile);
+        }
+		
+        private function onAdVideoMidpoint(): void {
+			console("-- ON AdVideoMidpoint");
+			_model.broadcastEventExternally(VPAIDEvent.AdVideoMidpoint);
+        }
+		
+        private function onAdVideoThirdQuartile(): void {
+			console("-- ON AdVideoThirdQuartile");
+			_model.broadcastEventExternally(VPAIDEvent.AdVideoThirdQuartile);
+        }
+		
+		
 		public function abortAd(): void {
 			console("ABORTING AD");
-			
 			_model.broadcastErrorEventExternally(VPAIDEvent.AdCreativeError);
-            /*_model.broadcastErrorEventExternally(VPAIDEvent.AdError);*/
             _vpaidAd.stopAd();
 		}
-		
-        public function setDebug(pValue):void {
-            _debug = pValue;
-        }
+	
 		
 		/*
 			loadVPAIDXML
@@ -315,6 +346,37 @@ package com.videojs.vpaid {
 				console("OnAdStarted");
                 onAdStarted();
             });
+			
+            _vpaidAd.addEventListener(VPAIDEvent.AdClickThru, function():void {
+				console("OnAdClickThru");
+                onAdClickThru();
+            });
+			
+            _vpaidAd.addEventListener(VPAIDEvent.AdPaused, function():void {
+				console("OnAdPaused");
+                onAdPaused();
+            });
+			
+            _vpaidAd.addEventListener(VPAIDEvent.AdPlaying, function():void {
+				console("OnAdPlaying");
+                onAdPlaying();
+            });
+			
+            _vpaidAd.addEventListener(VPAIDEvent.AdVideoFirstQuartile, function():void {
+				console("AdVideoFirstQuartile");
+                onAdVideoFirstQuartile();
+            });
+			
+            _vpaidAd.addEventListener(VPAIDEvent.AdVideoMidpoint, function():void {
+				console("AdVideoMidpoint");
+                onAdVideoMidpoint();
+            });
+			
+            _vpaidAd.addEventListener(VPAIDEvent.AdVideoThirdQuartile, function():void {
+				console("AdVideoThirdQuartile");
+                onAdVideoThirdQuartile();
+            });
+			
 
 			console("handshake");
             _vpaidAd.handshakeVersion("2.0");
@@ -323,22 +385,25 @@ package com.videojs.vpaid {
             // Use stage rect because current ad implementations do not currently provide width/height.
             _vpaidAd.initAd(_model.stageRect.width, _model.stageRect.height, "normal", _model.bitrate, _model.adParameters);
 			
-			/*_intervalId = setTimeout(delayedFunction, _timeoutDelay);*/
-			_adTimeout = new Timer(_timeoutDelay);
-			_adTimeout.addEventListener("timer", delayedFunction);
-			
-			_adTimeout.start();
+			ExternalInterface.call("console.info", "[ActionScript - AdContainer] TIMEOUT::" + _adResponseTimeoutDelay);
+			if (_adResponseTimeoutDelay == -1) {
+				ExternalInterface.call("console.info", "[ActionScript - AdContainer] SKIPPING TIMEOUT");
+			}
+			else {
+				_adTimeout = new Timer(_adResponseTimeoutDelay);
+				_adTimeout.addEventListener("timer", adResponseTimeoutFn);
+				_adTimeout.start();
+			}
         }
 		
-		public function delayedFunction(event:TimerEvent): void {
+		public function adResponseTimeoutFn(event:TimerEvent): void {
 			console("Ad Wait Timeout! Ending Ad!");
 			clearTimeout();
+			_model.broadcastErrorEventExternally(VPAIDEvent.AdTimeoutError);
 			abortAd();
-			/*console(_intervalId);*/
 		}
 		
 		public function clearTimeout(): void {
-			/*clearTimeout(_intervalId);*/
 			_adTimeout.stop();
 			console("Timeout cleared!");
 		}

@@ -73,27 +73,58 @@ function runVPAIDAlt() {
 			console.log("[VJS] video loadstart");
 		});
 
+
 		/*
 		VPAID Ad Events
 		*/
-		player.on("adstart", function(event){
-			console.log("[VJS - VPAID] ad start");
-		});
-
-		player.on("adend", function(event){
-			console.log("[VJS - VPAID] ad end");
-		});
-
-		player.on("adtimeout", function(event){
-			console.log("[VJS - VPAID] ad timeout");
+		
+		// Start ups
+		player.on("vpaid_AdStarted", function(event){
+			console.log("[VJS] ad started");
 		});
 		
-       	player.on("vpaid_AdComplete", function(event){
-			console.log("[VJS] VPAID COMPLETE");
+		player.on("vpaid_AdLoaded", function(event){
+			console.log("[VJS] ad loaded");
+		});
+		
+		// Interactions
+       	player.on("vpaid_AdClickThru", function(event){
+			console.log("[VJS] ad clickthru");
+		});
+		
+		// Errors
+		player.on("vpaid_AdTimeoutError", function(event){
+			console.log("[VJS] ad timeout");
 		});
 		
        	player.on("vpaid_error", function(event){
-			console.log("[VJS] VPAID ERROR");
+			console.log("[VJS] ad error");
+		});
+		
+		// Ad Duration
+		player.on("vpaid_AdVideoFirstQuartile", function(event){
+			console.log("[VJS] ad first quarter");
+		});
+		
+		player.on("vpaid_AdVideoMidpoint", function(event){
+			console.log("[VJS] ad midpoint");
+		});
+		
+		player.on("vpaid_AdVideoThirdQuartile", function(event){
+			console.log("[VJS] ad third quarter");
+		});
+		
+       	player.on("vpaid_AdComplete", function(event){
+			console.log("[VJS] ad complete");
+		});
+		
+		// Ad Playback
+		player.on("vpaid_AdPlaying", function(event){
+			console.log("[VJS] ad playing");
+		});
+		
+		player.on("vpaid_AdPaused", function(event){
+			console.log("[VJS] ad paused");
 		});
 		
 	});

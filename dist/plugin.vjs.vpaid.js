@@ -90,10 +90,11 @@
    */
   defaults = {
     vpaidSWF: "http://localhost:8000/dist/videojs-vpaid.swf",
-    muted: false,
     flashVars: {},
-    params: {},
-    attributes: {}
+    attributes: {},
+    url: "",
+    debug: false,
+    timeout: 5000
   };
   vjsVPAID = function(options) {
     var attributes, flashVars, objId, params, placeHolder, player, pluginId, settings, setupEvents, testPlaceholder;
@@ -140,17 +141,16 @@
       id: pluginId,
       className: 'vjs-vpaid'
     });
-    console.log("SETUP EVENTS");
     options['vpaidUrl'] = options['vpaidUrl'].replace(/\&/ig, "%26").replace(/\+/ig, "%2B").replace(/\=/ig, "%3D").replace(/\ /ig, "%20");
     flashVars = vjs.obj.merge({
       'readyFunction': 'vjs.vpaidFlash.onReady',
       'eventProxyFunction': 'vjs.vpaidFlash.onEvent',
       'errorEventProxyFunction': 'vjs.vpaidFlash.onError',
       'muted': settings.muted,
-      'vpaidUrl': options['vpaidUrl'],
-      'vpaidDebug': options['debug']
+      'vpaidUrl': options['vpaidUrl'] || defaults.url,
+      'vpaidDebug': options['debug'] || defaults.debug,
+      'vpaidTimeout': options['timeout'] || defaults.timeout
     }, settings['flashVars']);
-    console.log("Flashvars", flashVars);
     params = vjs.obj.merge({
       'wmode': 'opaque',
       'bgcolor': '#000000'

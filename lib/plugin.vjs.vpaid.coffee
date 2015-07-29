@@ -95,12 +95,12 @@
   vjs.vpaidFlash['onReady'] = (swfID)->
 
   vjs.vpaidFlash['onEvent'] = (swfID, eventName) ->
-#    console.log("[VPAID] OnEvent\nSWF:\t\t#{swfID}\nEvent:\t\t#{eventName}\nTrigger:\tvpaid_#{eventName}\n-----\t-----")
+    #console.log("[VPAID] OnEvent\nSWF:\t\t#{swfID}\nEvent:\t\t#{eventName}\nTrigger:\tvpaid_#{eventName}\n-----\t-----")
     _player = vjs.players.player
     _player.trigger("vpaid_#{eventName}")
 
   vjs.vpaidFlash['onError'] = (swfID, err)->
-#    console.log("[VPAID] OnError\nSWF:\t\t#{swfID}\nEvent:\t\tvpaid_error\nError:\n", err)
+    #console.log("[VPAID] OnError\nSWF:\t\t#{swfID}\nEvent:\t\tvpaid_error\nError:\n", err)
     _player = vjs.players.player
     _player.trigger("vpaid_error")
 
@@ -112,10 +112,11 @@
   # default options
   defaults = {
     vpaidSWF    : "http://localhost:8000/dist/videojs-vpaid.swf"
-    muted       : false
     flashVars   : {}
-    params      : {}
     attributes  : {}
+    url  		: ""
+    debug  		: false
+    timeout  	: 5000
   }
 
   vjsVPAID = (options)->
@@ -178,8 +179,6 @@
       id        : pluginId
       className : 'vjs-vpaid'
     })
-    
-    console.log("SETUP EVENTS")
 
     # replace common problem characters in vpaidUrl
     options['vpaidUrl'] = options['vpaidUrl'].replace(/\&/ig, "%26").replace(/\+/ig, "%2B").replace(/\=/ig, "%3D").replace(/\ /ig, "%20")
@@ -189,19 +188,18 @@
 
 	   #   SWF Callback Functions
        'readyFunction'				    : 'vjs.vpaidFlash.onReady'
-       'eventProxyFunction'			: 'vjs.vpaidFlash.onEvent'
+       'eventProxyFunction'				: 'vjs.vpaidFlash.onEvent'
        'errorEventProxyFunction'		: 'vjs.vpaidFlash.onError'
 
        #   Player Settings
        'muted'		  : settings.muted
 
        #   VPAID Settings
-       'vpaidUrl'    : options['vpaidUrl']
-       'vpaidDebug'  : options['debug']
+       'vpaidUrl'    	: options['vpaidUrl'] or defaults.url
+       'vpaidDebug'  	: options['debug'] or defaults.debug
+	   'vpaidTimeout'	: options['timeout'] or defaults.timeout
 
     }, settings['flashVars'])
-
-    console.log("Flashvars", flashVars)
 
     # Merge params to pass to Object Element
     params = vjs.obj.merge({

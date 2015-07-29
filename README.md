@@ -79,6 +79,43 @@ Chrome 21+ (as of 2013/01/01) doens't run Flash files that are local and loaded 
  
 # What's New
 
+## v1.0.2
+
+##### New Plugin Option "timeout"
+
+As noted, there is a current implementation to have the ad fail after a specified amount of time. Prior to this version it was hardcoded to 5 seconds, with this update you can now specify your own timeout *(in ms)*, or disable it all together. If it is not specified it will default to 5 seconds.
+
+```javascript
+vjsVpaid : {
+	...
+	timeout: 6000
+}
+
+```
+```javascript
+vjsVpaid : {
+	...
+	timeout: -1
+}
+
+```
+
+##### New events
+
+I have added new events to be triggered and available to be listened to by VideoJS. You can find the complete list of events in the working demo, but here is a quick list of all possible events. Please note that each will be prepended with `vpaid_` :
+
+- AdStarted
+- AdLoaded
+- AdClickThru
+- AdTimeoutError
+- error
+- AdVideoFirstQuartile
+- AdVideoMidpoint
+- AdVideoThirdQuartile
+- AdComplete
+- AdPlaying
+- AdPaused
+
 ## v1.0.1
 
 ##### Important Notice
@@ -153,3 +190,4 @@ This basically combines both `build-lib:1` and `build-swf`.
 
  - 1.0.0: Initial release, stable
  - 1.0.1: Removed need to have params split from url, added new Grunt tasks
+ - 1.0.2: Added support to configure ad timeout, Added new event triggers

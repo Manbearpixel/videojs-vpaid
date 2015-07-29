@@ -1,7 +1,7 @@
 {
   "name": "videojs-vpaid",
   "description": "A VPAID (Flash) plugin for VideoJS (http://videojs.com)",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Manbearpixel (https://twitter.com/manbearpixel)",
   "repository": {
     "type": "git",
