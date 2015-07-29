@@ -385,9 +385,9 @@ package com.videojs.vpaid {
             // Use stage rect because current ad implementations do not currently provide width/height.
             _vpaidAd.initAd(_model.stageRect.width, _model.stageRect.height, "normal", _model.bitrate, _model.adParameters);
 			
-			ExternalInterface.call("console.info", "[ActionScript - AdContainer] TIMEOUT::" + _adResponseTimeoutDelay);
+			console("Timeout set to: " + _adResponseTimeoutDelay);
 			if (_adResponseTimeoutDelay == -1) {
-				ExternalInterface.call("console.info", "[ActionScript - AdContainer] SKIPPING TIMEOUT");
+				console("Skipping ad timeout");
 			}
 			else {
 				_adTimeout = new Timer(_adResponseTimeoutDelay);

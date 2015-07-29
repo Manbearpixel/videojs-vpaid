@@ -55,6 +55,18 @@ Type: `boolean`
 Setting this flag to `true` will tell the VideoJS VPAID Plugin to emit information to the console.log, useful for testing out or debugging issues
 that may arise.
 
+#### timeout
+Type: `integer`
+
+As of **v1.0.2** you can now specify the length of an ad timeout. This causes the ad to fail silently if the ad response takes longer than that specified. By default it will timeout after 5 seconds. You may also disable this completely by setting the value to `-1`:
+
+```javascript
+vjsVpaid: {
+	...
+	timeout: 6000 // or -1 to disable
+}
+```
+
 ### Example
 ```javascript
 player = videojs("player", {
