@@ -93,15 +93,17 @@
     )
 
   vjs.vpaidFlash['onReady'] = (swfID)->
+    _player = vjs.players[document.getElementById(swfID).parentNode.parentNode.id];
+    _player.trigger("vpaid_ready")
 
   vjs.vpaidFlash['onEvent'] = (swfID, eventName) ->
     #console.log("[VPAID] OnEvent\nSWF:\t\t#{swfID}\nEvent:\t\t#{eventName}\nTrigger:\tvpaid_#{eventName}\n-----\t-----")
-    _player = vjs.players.player
+    _player = vjs.players[document.getElementById(swfID).parentNode.parentNode.id];
     _player.trigger("vpaid_#{eventName}")
 
   vjs.vpaidFlash['onError'] = (swfID, err)->
     #console.log("[VPAID] OnError\nSWF:\t\t#{swfID}\nEvent:\t\tvpaid_error\nError:\n", err)
-    _player = vjs.players.player
+    _player = vjs.players[document.getElementById(swfID).parentNode.parentNode.id];
     _player.trigger("vpaid_error")
 
 
