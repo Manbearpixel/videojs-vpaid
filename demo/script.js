@@ -16,17 +16,22 @@ function refreshPage() {
 	location.reload();
 }
 
-function setVPAID(vpaidURL, vpaidParams) {
+function setVPAID(vpaidURL) {
 	document.getElementById("vpaid_url").value = vpaidURL;
-    document.getElementById("vpaid_params").value = vpaidParams;
 }
 
 window.vjsPlayerVPAID = null;
 function runVPAIDAlt() {
     console.log("[js] Running Player with ALT VPAID Ad URL: " + document.getElementById("vpaid_url").value);
 
+	// Personal way of setting html5 or flash, NOT REQUIRED
+	var techOptions = ["html5", "flash"];
+	if (/firefox/i.test(navigator.userAgent) === true) {
+		techOptions = ["flash", "html5"];
+	}
+	
     window.vjsPlayerVPAID = videojs("player", {
-      techOrder : ["html5", "flash"],
+      techOrder : techOptions,
       controls  : true,
       autoplay  : false,
       poster    : videoPoster,
@@ -34,7 +39,6 @@ function runVPAIDAlt() {
         vjsVPAID : {
             vpaidSWF: '/dist/videojs-vpaid.swf',
             vpaidUrl: document.getElementById("vpaid_url").value,
-            vpaidParams: document.getElementById("vpaid_params").value,
             debug: vpaidFlashDebug
         }
       }
@@ -69,20 +73,60 @@ function runVPAIDAlt() {
 			console.log("[VJS] video loadstart");
 		});
 
+
 		/*
 		VPAID Ad Events
 		*/
-		player.on("adstart", function(event){
-			console.log("[VJS - VPAID] ad start");
+		
+		// Start ups
+		player.on("vpaid_AdStarted", function(event){
+			console.log("[VJS] ad started");
 		});
-
-		player.on("adend", function(event){
-			console.log("[VJS - VPAID] ad end");
+		
+		player.on("vpaid_AdLoaded", function(event){
+			console.log("[VJS] ad loaded");
 		});
-
-		player.on("adtimeout", function(event){
-			console.log("[VJS - VPAID] ad timeout");
-		})
+		
+		// Interactions
+       	player.on("vpaid_AdClickThru", function(event){
+			console.log("[VJS] ad clickthru");
+		});
+		
+		// Errors
+		player.on("vpaid_AdTimeoutError", function(event){
+			console.log("[VJS] ad timeout");
+		});
+		
+       	player.on("vpaid_error", function(event){
+			console.log("[VJS] ad error");
+		});
+		
+		// Ad Duration
+		player.on("vpaid_AdVideoFirstQuartile", function(event){
+			console.log("[VJS] ad first quarter");
+		});
+		
+		player.on("vpaid_AdVideoMidpoint", function(event){
+			console.log("[VJS] ad midpoint");
+		});
+		
+		player.on("vpaid_AdVideoThirdQuartile", function(event){
+			console.log("[VJS] ad third quarter");
+		});
+		
+       	player.on("vpaid_AdComplete", function(event){
+			console.log("[VJS] ad complete");
+		});
+		
+		// Ad Playback
+		player.on("vpaid_AdPlaying", function(event){
+			console.log("[VJS] ad playing");
+		});
+		
+		player.on("vpaid_AdPaused", function(event){
+			console.log("[VJS] ad paused");
+		});
+		
 	});
 
 }

@@ -31,7 +31,7 @@ package{
 		
 		private var _debug:Boolean = false;
 		private var _vpaidUrl:String = "";
-		private var _vpaidParams:String = "";
+		private var _vpaidTimeout:Number = 5000;
         
         public function VideoJS() {
             _stageSizeTimer = new Timer(250);
@@ -71,6 +71,7 @@ package{
 			
 			// Set debug for adContainer
 			_app.model.adContainer.setDebug(_debug);
+			_app.model.adContainer.setTimeout(_vpaidTimeout);
 			/*_app.model.adContainer.setForceAbort(_vpaidAdAbort);*/
 			
 			console("INIT END");
@@ -168,10 +169,7 @@ package{
 			// Set VPAID variables
 			_debug 			= humanToBoolean(loaderInfo.parameters.vpaidDebug);
 			_vpaidUrl		= loaderInfo.parameters.vpaidUrl;
-			_vpaidParams	= loaderInfo.parameters.vpaidParams;
-			
-			var pattern:RegExp = /\|\|/g;
-			_vpaidParams = _vpaidParams.replace(pattern,"&");
+			_vpaidTimeout	= loaderInfo.parameters.vpaidTimeout;
         }
         
         private function onStageSizeTimerTick(e:TimerEvent):void{
@@ -456,9 +454,8 @@ package{
 				}
 			
 				console("initiating VPAID with ad URL: " + _vpaidUrl);
-				console("additional Params: " + _vpaidParams);
 				
-				_app.model.adContainer.loadVPAIDXML(_vpaidUrl, _vpaidParams,
+				_app.model.adContainer.loadVPAIDXML(_vpaidUrl,
 					function(event:Event):void {
 						console("ONCOMPLETE XML Load");
 						var response:String = event.target.data;
