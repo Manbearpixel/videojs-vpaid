@@ -95,12 +95,12 @@
   vjs.vpaidFlash['onReady'] = (swfID)->
 
   vjs.vpaidFlash['onEvent'] = (swfID, eventName) ->
-    console.log("[VPAID] OnEvent\nSWF:\t\t#{swfID}\nEvent:\t\t#{eventName}\nTrigger:\tvpaid_#{eventName}\n-----\t-----")
+    #console.log("[VPAID] OnEvent\nSWF:\t\t#{swfID}\nEvent:\t\t#{eventName}\nTrigger:\tvpaid_#{eventName}\n-----\t-----")
     _player = vjs.players.player
     _player.trigger("vpaid_#{eventName}")
 
   vjs.vpaidFlash['onError'] = (swfID, err)->
-    console.log("[VPAID] OnError\nSWF:\t\t#{swfID}\nEvent:\t\tvpaid_error", err)
+    #console.log("[VPAID] OnError\nSWF:\t\t#{swfID}\nEvent:\t\tvpaid_error\nError:\n", err)
     _player = vjs.players.player
     _player.trigger("vpaid_error")
 
@@ -111,14 +111,58 @@
 
   # default options
   defaults = {
-    vpaidSWF    : "http://localhost:8888/dist/video-js.swf"
-    muted       : false
+    vpaidSWF    : "http://localhost:8000/dist/videojs-vpaid.swf"
     flashVars   : {}
-    params      : {}
     attributes  : {}
+    url  		: ""
+    debug  		: false
+    timeout  	: 5000
   }
 
   vjsVPAID = (options)->
+
+    setupEvents = ()->
+
+      # define class names
+      className = {
+        vpaidActive   : 'vjs-vpaid-active'
+        vpaidStarted  : 'vjs-vpaid-started'
+      }
+
+      # play function
+      playFn = ()->
+        if vjs.vpaidFlash['didComplete'] is false
+          vjs.vpaidFlash['didComplete'] = true
+          vjs.vpaidFlash.cancelContentPlay(player)
+          player.el().className += " #{className.vpaidActive}";
+
+      # ad complete function
+      adCompleteFn = ()->
+        player.removeClass(className.vpaidActive)
+        player.removeClass(className.vpaidStarted)
+        player.el().removeChild(document.getElementById(pluginId))
+
+        player.off('vpaid_AdStarted', adStartedFn)
+        player.off('vpaid_AdComplete', adCompleteFn)
+        player.off('vpaid_error', adErrorFn)
+        player.off('play', playFn)
+
+      # ad started function
+      adStartedFn = ()->
+        player.el().className += " #{className.vpaidStarted}";
+
+      # ad error function
+      adErrorFn = ()->
+        player.trigger("vpaid_AdComplete")
+
+      # create event listeners
+      player.on('vpaid_AdStarted', adStartedFn)
+      player.on('vpaid_AdComplete', adCompleteFn)
+      player.on('vpaid_error', adErrorFn)
+      player.on('play', playFn)
+
+
+    # create settings
     settings  = videojs.util.mergeOptions(defaults, options)
     player    = this
     pluginId  = player.id() + '_vpaidflash'
@@ -136,21 +180,24 @@
       className : 'vjs-vpaid'
     })
 
+    # replace common problem characters in vpaidUrl
+    options['vpaidUrl'] = options['vpaidUrl'].replace(/\&/ig, "%26").replace(/\+/ig, "%2B").replace(/\=/ig, "%3D").replace(/\ /ig, "%20")
+
     # Merge flash variables to pass to SWF
     flashVars = vjs.obj.merge({
 
-        #   SWF Callback Functions
-        'readyFunction'				    : 'vjs.vpaidFlash.onReady'
-        'eventProxyFunction'			: 'vjs.vpaidFlash.onEvent'
-        'errorEventProxyFunction'	: 'vjs.vpaidFlash.onError'
+	   #   SWF Callback Functions
+       'readyFunction'				    : 'vjs.vpaidFlash.onReady'
+       'eventProxyFunction'				: 'vjs.vpaidFlash.onEvent'
+       'errorEventProxyFunction'		: 'vjs.vpaidFlash.onError'
 
-        #   Player Settings
-        'muted'		  : settings.muted
+       #   Player Settings
+       'muted'		  : settings.muted
 
-        #   VPAID Settings
-        'vpaidUrl'    : options['vpaidUrl']
-        'vpaidParams' : options['vpaidParams'].replace(/&/ig, "||")
-        'vpaidDebug'  : options['debug']
+       #   VPAID Settings
+       'vpaidUrl'    	: options['vpaidUrl'] or defaults.url
+       'vpaidDebug'  	: options['debug'] or defaults.debug
+	   'vpaidTimeout'	: options['timeout'] or defaults.timeout
 
     }, settings['flashVars'])
 
@@ -173,27 +220,8 @@
     # Add embed object to player
     player.el().appendChild(testPlaceholder)
 
-
-    # on play
-    player.on('play', (event)->
-      if vjs.vpaidFlash['didComplete'] is false
-        vjs.vpaidFlash['didComplete'] = true
-        vjs.vpaidFlash.cancelContentPlay(player)
-        player.el().className += ' vjs-vpaid-active';
-    )
-
-    # on ad complete
-    player.on('vpaid_AdComplete', (event)->
-      player.removeClass('vjs-vpaid-active')
-      player.removeClass('vjs-vpaid-started')
-      player.el().removeChild(document.getElementById(pluginId))
-    )
-
-    # on ad started
-    player.on('vpaid_AdStarted', (event)->
-      player.el().className += ' vjs-vpaid-started';
-    )
+    # Setup events
+    setupEvents()
 
   videojs.plugin('vjsVPAID', vjsVPAID)
 )(window, window.videojs)
-
